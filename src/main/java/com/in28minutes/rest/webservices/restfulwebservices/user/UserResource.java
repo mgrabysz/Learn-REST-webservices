@@ -23,19 +23,14 @@ public class UserResource {
     public UserResource(UserDaoService service) {
         this.service = service;
     }
-    // GET /users
-    @GetMapping("/users")
-    public List<User> retrieveAllUsers() {
-        return service.findAll();
-    }
 
-    /**
-     * The magic here with WebMcvLinkBuilder and EntityModel wrapping User
-     * is to provide a link to request all users ("http://localhost:8080/users")
-     * in a response for single user. The link is provided as an additional field.
-     */
     @GetMapping("/users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
+        /**
+         * The magic here with WebMcvLinkBuilder and EntityModel wrapping User
+         * is to provide a link to request all users ("http://localhost:8080/users")
+         * in a response for single user. The link is provided as an additional field.
+         */
         User user = service.findOne(id);
 
         if (user==null) {
@@ -46,6 +41,12 @@ public class UserResource {
         WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         entityModel.add(link.withRel("all-users"));
         return entityModel;
+    }
+    // GET /users
+
+    @GetMapping("/users")
+    public List<User> retrieveAllUsers() {
+        return service.findAll();
     }
 
     @PostMapping("/users")
